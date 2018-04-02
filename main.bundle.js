@@ -84,6 +84,12 @@ var colorService = new ColorService();
 
 colorService.getTopColor();
 
+$('.text-submission button').on('click', function (e) {
+  e.preventDefault();
+  var input = $('textarea').val();
+  colorService.sanitizeTextInput(input);
+});
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -859,14 +865,53 @@ var ColorService = function () {
       });
     }
   }, {
+    key: "getAllColors",
+    value: function getAllColors() {
+      return fetch(this.baseUrl + "/api/v1/colors").then(function (response) {
+        return response.json();
+      });
+    }
+  }, {
     key: "appendTopColor",
     value: function appendTopColor(object) {
-      $(".top-color").append(this.addTopColor(object));
+      var $topColor = $(".top-color");
+      $topColor.append(this.addTopColor(object));
     }
   }, {
     key: "addTopColor",
     value: function addTopColor(object) {
-      return object.value + " / Color Count: " + object.color_count;
+      return object.value + " with count: " + object.color_count;
+    }
+  }, {
+    key: "sanitizeTextInput",
+    value: function sanitizeTextInput(input) {
+      var textArray = input.split(" ");
+      this.checkTextColors(textArray);
+    }
+  }, {
+    key: "checkTextColors",
+    value: function checkTextColors(array) {
+      var colorArray = this.getAllColors().then(function (json) {
+        if (!response.ok) {
+          var error = {
+            status: response.status,
+            statusText: response.statusText,
+            json: json
+          };
+          return json;
+        }
+      });
+      var presentColors = [];
+      console.log(colorArray);
+      for (var i = 0; i < array.length; i++) {
+        for (var i = 0; i < colorArray.length; i++) {
+          if (array[i] === colorArray[i].value) {
+            presentColors.push(colorArray[i]);
+          }
+        }
+      }
+
+      // i want to iterate of array of words and then pass each word into another loop that iterates over an array of objects. I want to check each passed word against the value of the object. If the word exists as an object value, then push that value into a new object.
     }
   }]);
 
