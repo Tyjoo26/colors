@@ -852,6 +852,8 @@ var _colors2 = _interopRequireDefault(_colors);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var _require = __webpack_require__(8),
@@ -882,7 +884,7 @@ var ColorService = function () {
   }, {
     key: 'postColors',
     value: function postColors(object) {
-      fetch(this.baseUrl, this.postConfig(object)).then(handleResponse).catch(errorLog);
+      fetch(this.baseUrl + '/api/v1/colors', this.postConfig(object)).then(handleResponse).catch(errorLog);
     }
   }, {
     key: 'postConfig',
@@ -907,7 +909,9 @@ var ColorService = function () {
   }, {
     key: 'sanitizeTextInput',
     value: function sanitizeTextInput(input) {
-      var textArray = input.split(" ");
+      var sanitized = input.replace(/[,.]/g, '');
+      var textArray = sanitized.split(" ");
+
       this.checkTextColors(textArray);
     }
   }, {
@@ -919,20 +923,36 @@ var ColorService = function () {
           color_array.push(array[i]);
         }
       }
-      // this.storeCollectionForPost(color_array)
+      this.storeCollectionForPost(color_array);
       this.removeDuplicates(color_array);
       // i want to iterate of array of words and then pass each word into another loop that iterates over an array of objects. I want to check each passed word against the value of the object. If the word exists as an object value, then push that object into a new array. store that array of objects into a storeArray function that is basically an empty object in order to preserve duplicates for posting to API,
     }
-    // storeCollectionForPost(presentColors) {
-    //   this.postCollection = [...presentColors]
-    //   this.iterateForPost(this.postCollection)
-    // }
-    // iterateForPost(array) {
-    //   array.forEach(object) {
-    //     this.postColors(object)
-    //   }
-    // }
+  }, {
+    key: 'storeCollectionForPost',
+    value: function storeCollectionForPost(presentColors) {
+      this.postCollection = [].concat(_toConsumableArray(presentColors));
+      this.sanitizeForPost(this.postCollection);
+    }
+  }, {
+    key: 'sanitizeForPost',
+    value: function sanitizeForPost(array) {
+      var postArray = [];
+      array.forEach(function (element) {
+        var postObject = {};
+        postObject.value = { color: element };
+        postArray.push(postObject);
+      });
+      this.iterateForPost(postArray);
+    }
+  }, {
+    key: 'iterateForPost',
+    value: function iterateForPost(array) {
+      var _this2 = this;
 
+      array.forEach(function (object) {
+        return _this2.postColors(object);
+      });
+    }
   }, {
     key: 'removeDuplicates',
     value: function removeDuplicates(array) {
@@ -953,13 +973,13 @@ var ColorService = function () {
     }
   }, {
     key: 'appendSwatch',
-    value: function appendSwatch(object) {
-      $('article.colorized-text').append(this.addSwatch(object));
+    value: function appendSwatch(color) {
+      $('article.colorized-text').append(this.addSwatch(color));
     }
   }, {
     key: 'addSwatch',
-    value: function addSwatch(object) {
-      return '<div class="swatch" style="background-color:' + this.hexCodes[object.value] + '"></div>';
+    value: function addSwatch(color) {
+      return '<div class="swatch" style="background-color:' + this.hexCodes[color] + '"></div>';
     }
   }]);
 
