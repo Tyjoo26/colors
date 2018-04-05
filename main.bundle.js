@@ -925,7 +925,6 @@ var ColorService = function () {
       }
       this.storeCollectionForPost(color_array);
       this.removeDuplicates(color_array);
-      // i want to iterate of array of words and then pass each word into another loop that iterates over an array of objects. I want to check each passed word against the value of the object. If the word exists as an object value, then push that object into a new array. store that array of objects into a storeArray function that is basically an empty object in order to preserve duplicates for posting to API,
     }
   }, {
     key: 'storeCollectionForPost',
