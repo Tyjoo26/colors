@@ -938,7 +938,7 @@ var ColorService = function () {
       var postArray = [];
       array.forEach(function (element) {
         var postObject = {};
-        postObject.value = { color: element };
+        postObject.color = { value: element };
         postArray.push(postObject);
       });
       this.iterateForPost(postArray);
@@ -948,6 +948,7 @@ var ColorService = function () {
     value: function iterateForPost(array) {
       var _this2 = this;
 
+      console.log(array);
       array.forEach(function (object) {
         return _this2.postColors(object);
       });
